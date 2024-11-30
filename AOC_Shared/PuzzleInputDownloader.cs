@@ -1,10 +1,10 @@
 ﻿namespace AOC_Shared;
 
-public class PuzzleDownloader
+public class PuzzleInputDownloader
 {
     private string sessionCookie = string.Empty;
 
-    public PuzzleDownloader()
+    public PuzzleInputDownloader()
     {
         GetSessionCookie();
     }

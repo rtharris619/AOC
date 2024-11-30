@@ -13,7 +13,7 @@ public class Day1
 
     public async Task Driver()
     {
-        var puzzleInput = await new PuzzleDownloader().DownloadPuzzleInputAsync(2024, 1);
+        var puzzleInput = await new PuzzleInputDownloader().DownloadPuzzleInputAsync(2024, 1);
 
         Console.WriteLine(puzzleInput.ToString());
 

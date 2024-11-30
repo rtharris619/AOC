@@ -1,8 +1,8 @@
-﻿using AOC_2015.Day1;
+﻿using AOC_2015;
 
 class Program
 {
-    static async Task Main(string[] args)
+    static async Task Main()
     {
         var day1 = new Day1();
 

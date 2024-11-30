@@ -2,7 +2,7 @@
 
 internal class Program
 {
-    static async Task Main(string[] args)
+    static async Task Main()
     {
         var day1 = new Day1();
 

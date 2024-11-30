@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace AOC_2015.Day1;
+namespace AOC_2015;
 
 public class Day1Tests
 {

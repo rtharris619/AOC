@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AOC_2015.Day1;
+namespace AOC_2015;
 
 public class Day1
 {
@@ -70,7 +70,7 @@ public class Day1
 
     public async Task Driver()
     {
-        var puzzleInput = await new PuzzleDownloader().DownloadPuzzleInputAsync(2015, 1);
+        var puzzleInput = await new PuzzleInputDownloader().DownloadPuzzleInputAsync(2015, 1);
 
         var floor = FindFloor(puzzleInput);
         Console.WriteLine(floor);
