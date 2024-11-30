@@ -5,78 +5,79 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AOC_2015.Day1
+namespace AOC_2015.Day1;
+
+public class Day1
 {
-    internal class Day1
+    public int FindFloor(string input)
     {
-        private void FindFloor(string input)
+        var result = input.Count(x => x == '(') - input.Count(x => x == ')');
+
+        return result;
+    }
+
+    public int BasementPosition(string input)
+    {
+        var basementPosition = int.MinValue;
+        var current = 0;
+        var up = '(';
+        var down= ')';
+
+        for (var i = 0; i < input.Length; i++)
         {
-            var result = input.Count(x => x == '(') - input.Count(x => x == ')');
-
-            Console.WriteLine(result);
-        }
-
-        private void BasementPosition(string input)
-        {
-            var basementPosition = int.MinValue;
-            var current = 0;
-            var up = '(';
-            var down= ')';
-
-            for (var i = 0; i < input.Length; i++)
+            if (input[i] == up)
             {
-                if (input[i] == up)
-                {
-                    current += 1;
-                }
-                if (input[i] == down)
-                {
-                    current -= 1;
-                }
-
-                if (current == -1)
-                {
-                    basementPosition = i; 
-                    break;
-                }
+                current += 1;
+            }
+            if (input[i] == down)
+            {
+                current -= 1;
             }
 
-            Console.WriteLine(basementPosition + 1);
+            if (current == -1)
+            {
+                basementPosition = i + 1;
+                break;
+            }
         }
 
-        private void BasementPositionFunc(string input)
-        {
-            var up = '(';
-            var down = ')';
+        return basementPosition;
+    }
 
-            var basementPosition = input
-                .Select((c, i) => new { c, i })
-                .Aggregate(new { current = 0, position = (int?)null }, (acc, item) =>
-                {
-                    var current = acc.current + (item.c == up ? 1 : item.c == down ? -1 : 0);
-                    var position = acc.position ?? (current == -1 ? item.i : null);
+    public int BasementPositionFunc(string input)
+    {
+        var up = '(';
+        var down = ')';
 
-                    return new { current, position };
-                }).position ?? int.MinValue;
+        var basementPosition = input
+            .Select((c, i) => new { c, i })
+            .Aggregate(new { current = 0, position = (int?)null }, (acc, item) =>
+            {
+                var current = acc.current + (item.c == up ? 1 : item.c == down ? -1 : 0);
+                var position = acc.position ?? (current == -1 ? item.i + 1 : null);
 
-            Console.WriteLine(basementPosition + 1);
-        }
+                return new { current, position };
+            }).position ?? int.MinValue;
 
-        private void BasementPositionTest()
-        {
-            var input = ")";
-            BasementPosition(input);
-        }
+        return basementPosition;
+    }
 
-        public async Task Driver()
-        {
-            var puzzleInput = await new PuzzleDownloader().DownloadPuzzleInputAsync(2015, 1);
+    private void BasementPositionTest()
+    {
+        var input = ")";
+        BasementPosition(input);
+    }
 
-            FindFloor(puzzleInput);
+    public async Task Driver()
+    {
+        var puzzleInput = await new PuzzleDownloader().DownloadPuzzleInputAsync(2015, 1);
 
-            BasementPositionFunc(puzzleInput);
+        var floor = FindFloor(puzzleInput);
+        Console.WriteLine(floor);
 
-            // Answers: 74; 1795
-        }
+        var position = BasementPositionFunc(puzzleInput);
+        Console.WriteLine(position);
+
+        // Answers: 74; 1795
     }
 }
