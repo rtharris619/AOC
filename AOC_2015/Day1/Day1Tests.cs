@@ -25,7 +25,7 @@ public class Day1Tests
     }
 
     [Fact]
-    public void TestBasementPosition()
+    public void TestFindBasementPosition()
     {
         // Arrange
         var input = "()())";
@@ -33,7 +33,7 @@ public class Day1Tests
 
         // Act
         var day1 = new Day1();
-        var result = day1.BasementPosition(input);
+        var result = day1.FindBasementPosition(input);
 
         // Assert
         Assert.Equal(expected, result);

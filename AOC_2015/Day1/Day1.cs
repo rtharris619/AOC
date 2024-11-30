@@ -16,7 +16,7 @@ public class Day1
         return result;
     }
 
-    public int BasementPosition(string input)
+    public int FindBasementPosition(string input)
     {
         var basementPosition = int.MinValue;
         var current = 0;
@@ -44,7 +44,7 @@ public class Day1
         return basementPosition;
     }
 
-    public int BasementPositionFunc(string input)
+    public int FindBasementPositionFunc(string input)
     {
         var up = '(';
         var down = ')';
@@ -62,12 +62,6 @@ public class Day1
         return basementPosition;
     }
 
-    private void BasementPositionTest()
-    {
-        var input = ")";
-        BasementPosition(input);
-    }
-
     public async Task Driver()
     {
         var puzzleInput = await new PuzzleInputDownloader().DownloadPuzzleInputAsync(2015, 1);
@@ -75,7 +69,7 @@ public class Day1
         var floor = FindFloor(puzzleInput);
         Console.WriteLine(floor);
 
-        var position = BasementPositionFunc(puzzleInput);
+        var position = FindBasementPositionFunc(puzzleInput);
         Console.WriteLine(position);
 
         // Answers: 74; 1795
