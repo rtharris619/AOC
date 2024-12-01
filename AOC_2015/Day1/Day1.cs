@@ -71,7 +71,5 @@ public class Day1
 
         var position = FindBasementPositionFunc(puzzleInput);
         Console.WriteLine(position);
-
-        // Answers: 74; 1795
     }
 }
