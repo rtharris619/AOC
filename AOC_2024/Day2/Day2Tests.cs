@@ -44,4 +44,16 @@ public class Day2Tests
 
         Assert.Equal(expected, result);
     }
+
+    [Fact]
+    public void TestPart2c()
+    {
+        var input = "1 2 7 4 5";
+        var expected = 1;
+
+        var day2 = new Day2();
+        var result = day2.SolvePart2(input);
+
+        Assert.Equal(expected, result);
+    }
 }
