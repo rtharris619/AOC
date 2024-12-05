@@ -26,5 +26,9 @@ public class Day3Tests
     {
         var input = "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))";
         var expected = 48;
+
+        var day3 = new Day3();
+        var result = day3.SolvePart2(input);
+        Assert.Equal(expected, result);
     }
 }

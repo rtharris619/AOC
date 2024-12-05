@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -59,14 +60,80 @@ public class Day3
     {
         var result = 0;
 
-        foreach (Match match in MatchDos(input))
+        var dos = MatchDos(input);
+        var donts = MatchDonts(input);
+
+        var enabledInstructionIndices = dos.Select(x => x.Index).ToList();
+        var disabledInstructionIndices = donts.Select(x => x.Index).ToList();
+
+        for (var i = 0; i < enabledInstructionIndices.Count - 2; i++)
         {
-            Console.WriteLine($"{match.Index}: {match.Value}");
+            var intersections = disabledInstructionIndices.Where(disabled => disabled > enabledInstructionIndices[i] && 
+                disabled < enabledInstructionIndices[i + 1]).ToList();
+
+            Console.WriteLine("Start");
+            Console.WriteLine($"{enabledInstructionIndices[i]} {enabledInstructionIndices[i + 1]}");
+            Console.WriteLine(string.Join(',', intersections));
+           
+            if (intersections.Count == 0)
+            {
+                var range = (enabledInstructionIndices[i], enabledInstructionIndices[i + 1]);
+                var subInput = input.Substring(range.Item1, range.Item2 - range.Item1);
+                Console.WriteLine(subInput);
+
+                foreach (Match match in GetMultiplications(subInput))
+                {
+                    result += MultiplyMatchedNumbers(match);
+                }
+            }
+
+            if (intersections.Count == 1)
+            {
+                var range = (enabledInstructionIndices[i], intersections[0]);
+                var subInput = input.Substring(range.Item1, range.Item2 - range.Item1);
+                Console.WriteLine(subInput);
+
+                foreach (Match match in GetMultiplications(subInput))
+                {
+                    result += MultiplyMatchedNumbers(match);
+                }
+            }
+
+            if (intersections.Count > 1)
+            {
+                var range = (enabledInstructionIndices[i], intersections[0]);
+                var subInput = input.Substring(range.Item1, range.Item2 - range.Item1);
+                Console.WriteLine(subInput);
+
+                foreach (Match match in GetMultiplications(subInput))
+                {
+                    result += MultiplyMatchedNumbers(match);
+                }
+            }
+
+            Console.WriteLine("End");
         }
 
-        foreach (Match match in MatchDonts(input))
+        var lastIndex = enabledInstructionIndices[enabledInstructionIndices.Count - 2];
+        var length = enabledInstructionIndices[enabledInstructionIndices.Count - 1] - lastIndex;
+
+        var lsubInput = input.Substring(lastIndex, length);
+        Console.WriteLine(lsubInput);
+
+        foreach (Match match in GetMultiplications(lsubInput))
         {
-            Console.WriteLine($"{match.Index}: {match.Value}");
+            result += MultiplyMatchedNumbers(match);
+        }
+
+        lastIndex = enabledInstructionIndices[enabledInstructionIndices.Count - 1];
+        length = input.Length - lastIndex;
+
+        lsubInput = input.Substring(lastIndex, length);
+        Console.WriteLine(lsubInput);
+
+        foreach (Match match in GetMultiplications(lsubInput))
+        {
+            result += MultiplyMatchedNumbers(match);
         }
 
         return result;
