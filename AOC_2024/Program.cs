@@ -4,7 +4,7 @@ internal class Program
 {
     static async Task Main()
     {
-        var riddle = new Day3();
+        var riddle = new Day4();
 
         await riddle.Driver();
     }

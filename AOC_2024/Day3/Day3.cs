@@ -71,15 +71,10 @@ public class Day3
             var intersections = disabledInstructionIndices.Where(disabled => disabled > enabledInstructionIndices[i] && 
                 disabled < enabledInstructionIndices[i + 1]).ToList();
 
-            Console.WriteLine("Start");
-            Console.WriteLine($"{enabledInstructionIndices[i]} {enabledInstructionIndices[i + 1]}");
-            Console.WriteLine(string.Join(',', intersections));
-           
             if (intersections.Count == 0)
             {
                 var range = (enabledInstructionIndices[i], enabledInstructionIndices[i + 1]);
                 var subInput = input.Substring(range.Item1, range.Item2 - range.Item1);
-                Console.WriteLine(subInput);
 
                 foreach (Match match in GetMultiplications(subInput))
                 {
@@ -91,7 +86,6 @@ public class Day3
             {
                 var range = (enabledInstructionIndices[i], intersections[0]);
                 var subInput = input.Substring(range.Item1, range.Item2 - range.Item1);
-                Console.WriteLine(subInput);
 
                 foreach (Match match in GetMultiplications(subInput))
                 {
@@ -103,15 +97,12 @@ public class Day3
             {
                 var range = (enabledInstructionIndices[i], intersections[0]);
                 var subInput = input.Substring(range.Item1, range.Item2 - range.Item1);
-                Console.WriteLine(subInput);
 
                 foreach (Match match in GetMultiplications(subInput))
                 {
                     result += MultiplyMatchedNumbers(match);
                 }
             }
-
-            Console.WriteLine("End");
         }
 
         var lastIndex = enabledInstructionIndices[enabledInstructionIndices.Count - 2];
@@ -159,6 +150,6 @@ public class Day3
         //Console.WriteLine(part1Answer);
 
         var part2Answer = SolvePart2(input);
-        Console.WriteLine(part2Answer);
+        Console.WriteLine(part2Answer); // 108830766
     }
 }
