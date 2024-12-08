@@ -98,45 +98,24 @@ public class Day5
         {
             var incorrectUpdate = false;
 
+            // 97,13,75,29,47 -> 97,75,47,29,13
+
             for (int j = 0; j < updates[i].Count; j++)
             {
-                // 97,13,75,29,47 -> 97,75,47,29,13
                 var numberToCheck = updates[i][j];
+
                 var rules = pageOrderingRules.FirstOrDefault(x => x.Key == numberToCheck);
 
-                if (rules != null)
+                if (rules == null) continue;
+
+                foreach (var rule in rules)
                 {
-                    foreach (var rule in rules)
+                    var ruleInUpdatesIndex = updates[i].IndexOf(rule);
+                    if (ruleInUpdatesIndex != -1 && ruleInUpdatesIndex < j)
                     {
-                        var updateIndex = updates[i].IndexOf(rule);
-                        if (updateIndex < j && updateIndex != -1 && rule <= numberToCheck)
-                        {
-                            // switch positions in the array
-                            var temp = updates[i][j];
-                            updates[i][j] = updates[i][updateIndex];
-                            updates[i][updateIndex] = temp;
-
-                            incorrectUpdate = true;
-                        }
-                    }
-                }
-
-                var gtRules = pageOrderingRules
-                    .Where(group => group.Contains(numberToCheck))
-                    .Select(group => group.Key)
-                    .ToList();
-
-                if (gtRules == null) continue;
-
-                foreach (var rule in gtRules) // 97|75, 
-                {
-                    var updateIndex = updates[i].IndexOf(rule);
-                    if (updateIndex > j && updateIndex != -1 && rule >= numberToCheck)
-                    {
-                        // switch positions in the array
-                        var temp = updates[i][j];
-                        updates[i][j] = updates[i][updateIndex];
-                        updates[i][updateIndex] = temp;
+                        updates[i][j] = rule;
+                        updates[i][ruleInUpdatesIndex] = numberToCheck;
+                        j = ruleInUpdatesIndex;
 
                         incorrectUpdate = true;
                     }
@@ -174,32 +153,6 @@ public class Day5
     public async Task Driver()
     {
         var input = await new PuzzleInputDownloader().DownloadPuzzleInputAsync(2024, 5);
-
-        input = @"
-            47|53
-            97|13
-            97|61
-            97|47
-            75|29
-            61|13
-            75|53
-            29|13
-            97|29
-            53|29
-            61|53
-            97|53
-            61|29
-            47|13
-            75|47
-            97|75
-            47|61
-            75|61
-            47|29
-            75|13
-            53|13
-
-            97,13,75,29,47
-        ";
 
         //Console.WriteLine(input);
 
