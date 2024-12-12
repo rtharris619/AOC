@@ -1,12 +1,5 @@
 ﻿using AOC_Shared;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace AOC_2024;
 
@@ -218,83 +211,6 @@ public class Day6
         return result.Count;
     }
 
-    private bool DetectCycle((int Row, int Col) node, List<(int Row, int Col)> visited, (int Row, int Col) guardStartingPosition)
-    {
-        var direction = Direction.Up;
-        var guardPosition = guardStartingPosition;
-
-        List<(int Row, int Col)> loopCheck = new List<(int Row, int Col)>();
-
-        while (true)
-        {
-            var found = false;
-            var nodeHit = false;
-            
-
-            if (direction == Direction.Up)
-            {
-                var nextRow = guardPosition.Row - 1;
-
-                //if (node.Row == nextRow && node.Col == guardPosition.Col)
-
-                found = visited.Any(x => x.Row == nextRow && x.Col == guardPosition.Col);
-                if (found) guardPosition.Row--;
-            }
-
-            if (direction == Direction.Down)
-            {
-                var nextRow = guardPosition.Row + 1;
-                found = visited.Any(x => x.Row == nextRow && x.Col == guardPosition.Col);
-                if (found) guardPosition.Row++;
-            }
-
-            if (direction == Direction.Left)
-            {
-                var nextCol = guardPosition.Col - 1;
-
-                found = visited.Any(x => x.Row == guardPosition.Row && x.Col == nextCol);
-
-                if (found)
-                {
-                    guardPosition.Col--;
-
-                    if (node.Row == guardPosition.Row && node.Col == guardPosition.Col)
-                    {
-                        // test node hit to trigger direction change
-                        nodeHit = true;
-                    }
-                }
-            }
-
-            if (direction == Direction.Right)
-            {
-                var nextCol = guardPosition.Col + 1;
-                found = visited.Any(x => x.Row == guardPosition.Row && x.Col == nextCol);
-                if (found) guardPosition.Col++;
-            }
-
-            if (found)
-            {
-                loopCheck.Add((guardPosition.Row, guardPosition.Col));
-            }
-
-            if (!found || nodeHit) // change direction
-            {
-                direction = direction switch
-                {
-                    Direction.Up => Direction.Right,
-                    Direction.Down => Direction.Left,
-                    Direction.Left => Direction.Up,
-                    Direction.Right => Direction.Down,
-                    _ => throw new NotImplementedException(),
-                };
-            }
-        }
-        
-
-        return false;
-    }
-
     private int CalculateCycles(List<(int Row, int Col)> visited, (int Row, int Col) guardStartingPosition)
     {
         var result = 0;
@@ -306,8 +222,8 @@ public class Day6
         var set = new HashSet<(int Row, int Col, Direction direction)>();
 
         foreach (var node in visited)
-        { 
-            
+        {
+            if (node == guardStartingPosition) continue;
 
             if (set.Contains((node.Row, node.Col, direction)))
             {
@@ -319,7 +235,6 @@ public class Day6
 
             while (true)
             {
-                                
 
                 if (direction == Direction.Up)
                 {
@@ -333,7 +248,7 @@ public class Day6
                             guardPosition.Col++;
                             break;
                         }
-                        else 
+                        else
                         {
                             break;
                         }
@@ -460,82 +375,144 @@ public class Day6
                     break;
             }
 
-            
+
         }
 
-
-
-
-
-        //var lastPosition = visited.Last();
-
-        //var node = (guardStartingPosition.Row, guardStartingPosition.Col - 1); // hardcoded for now
-
-        //DetectCycle(node, visited, guardStartingPosition);
-
-        //while (true)
-        //{
-
-
-        //var found = false;
-
-        //if (direction == Direction.Up)
-        //{
-        //    var nextRow = guardPosition.Row - 1;
-        //    found = visited.Any(x => x.Row == nextRow && x.Col == guardPosition.Col);
-        //    if (found) guardPosition.Row--;
-        //}
-
-        //if (direction == Direction.Down)
-        //{
-        //    var nextRow = guardPosition.Row + 1;
-        //    found = visited.Any(x => x.Row == nextRow && x.Col == guardPosition.Col);
-        //    if (found) guardPosition.Row++;
-        //}
-
-        //if (direction == Direction.Left)
-        //{
-        //    var nextCol = guardPosition.Col - 1;
-        //    found = visited.Any(x => x.Row == guardPosition.Row && x.Col == nextCol);
-        //    if (found) guardPosition.Col--;
-        //}
-
-        //if (direction == Direction.Right)
-        //{
-        //    var nextCol = guardPosition.Col + 1;
-        //    found = visited.Any(x => x.Row == guardPosition.Row && x.Col == nextCol);
-        //    if (found) guardPosition.Col++;
-        //}
-
-        //if (!found) // change direction
-        //{
-        //    direction = direction switch
-        //    { 
-        //        Direction.Up => Direction.Right,
-        //        Direction.Down => Direction.Left,
-        //        Direction.Left => Direction.Up,
-        //        Direction.Right => Direction.Down,
-        //        _ => throw new NotImplementedException(),
-        //    };
-
-        //}
-
-        //if (guardPosition.Row == lastPosition.Row && guardPosition.Col == lastPosition.Col)
-        //    break;
-    //}
-
         return result;
+    }
+
+
+    private int CalculateNumberOfCycles(List<(int Row, int Col)> visited, (int Row, int Col) guardStartingPosition)
+    {
+        var cycles = 0;
+
+        var direction = Direction.Up;
+        var guardPosition = guardStartingPosition;
+
+        var obstructions = new (int Row, int Col)[]
+        {
+            (guardPosition.Row - 1, guardPosition.Col - 1),
+            //(guardPosition.Row - 2, guardPosition.Col)
+        };
+
+        foreach (var obstruction in obstructions) 
+        {
+            var seen = new HashSet<(int Row, int Col, Direction direction)>();
+
+            while (true)
+            {
+                if (seen.Contains((guardPosition.Row, guardPosition.Col, direction)))
+                {
+                    cycles++;
+                    break;
+                }
+
+                seen.Add((guardPosition.Row, guardPosition.Col, direction));
+
+                if (direction == Direction.Up)
+                {
+                    if (obstruction.Row == guardPosition.Row && obstruction.Col == guardPosition.Col)
+                    {
+                        direction = Direction.Right;
+
+                        // backtrack
+                        guardPosition.Row++;
+
+                        continue;
+                    }
+
+                    var nextRow = guardPosition.Row - 1;
+                    if (!visited.Any(x => x.Row == nextRow && x.Col == guardPosition.Col))
+                    {
+                        direction = Direction.Right;
+                    }
+                    else
+                    {
+                        guardPosition.Row--;
+                    }
+                }
+
+                if (direction == Direction.Down)
+                {
+                    if (obstruction.Row == guardPosition.Row && obstruction.Col == guardPosition.Col)
+                    {
+                        direction = Direction.Left;
+
+                        // backtrack
+                        guardPosition.Row--;
+
+                        continue;
+                    }
+
+                    var nextRow = guardPosition.Row + 1;
+                    if (!visited.Any(x => x.Row == nextRow && x.Col == guardPosition.Col))
+                    {
+                        direction = Direction.Left;
+                    }
+                    else
+                    {
+                        guardPosition.Row++;
+                    }
+                }
+
+                if (direction == Direction.Left)
+                {
+                    if (obstruction.Row == guardPosition.Row && obstruction.Col == guardPosition.Col)
+                    {
+                        direction = Direction.Up;
+
+                        // backtrack
+                        guardPosition.Col++;
+
+                        continue;
+                    }
+
+                    var nextCol = guardPosition.Col - 1;
+                    if (!visited.Any(x => x.Col == nextCol && x.Row == guardPosition.Row))
+                    {
+                        direction = Direction.Up;
+                    }
+                    else
+                    {
+                        guardPosition.Col--;
+                    }
+                }
+
+                if (direction == Direction.Right)
+                {
+                    if (obstruction.Row == guardPosition.Row && obstruction.Col == guardPosition.Col)
+                    {
+                        direction = Direction.Down;
+
+                        // backtrack
+                        guardPosition.Col--;
+
+                        continue;
+                    }
+
+                    var nextCol = guardPosition.Col + 1;
+                    if (!visited.Any(x => x.Col == nextCol && x.Row == guardPosition.Row))
+                    {
+                        direction = Direction.Down;
+                    }
+                    else
+                    {
+                        guardPosition.Col++;
+                    }
+                }
+            }
+        }
+
+        return cycles;
     }
 
     public int SolvePart2(string input)
     {
         var data = ExtractData(input);
 
-        var guardPosition = data.Item1;
+        var visited = CalculateRoute(data.Item1, data.Item2, Direction.Up, [data.Item1]);
 
-        var visited = CalculateRoute(data.Item1, data.Item2, Direction.Up, [guardPosition]);
-
-        var cycles = CalculateCycles(visited, guardPosition);
+        var cycles = CalculateNumberOfCycles(visited, data.Item1);
 
         return cycles;
     }
@@ -569,7 +546,7 @@ public class Day6
         //        ..#.X...X.
         //        ..XXXXX#X.
         //        ..X.X.X.X.
-        //        .#XXXXXXX.
+        //        .#XX^XXXX.
         //        .XXXXXXX#.
         //        #XXXXXXX..
         //        ......#X..
